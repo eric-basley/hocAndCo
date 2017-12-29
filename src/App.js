@@ -25,11 +25,9 @@ const App = ({ mouse }) => {
   const { x, y } = mouse
   return (
     <div style={{ height: '100vh' }}>
-      <div>
-        <h1>
-          Mouse position is: ({x}, {y})
-        </h1>
-      </div>
+      <h1>
+        Mouse position is: ({x}, {y})
+      </h1>
     </div>
   )
 }
