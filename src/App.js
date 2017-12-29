@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { spring } from 'popmotion';
 import cat from './cat.svg';
 
 class WithMouse extends React.Component {
@@ -21,19 +20,16 @@ WithMouse.propTypes = {
   children: PropTypes.func.isRequired,
 };
 
-class Cat extends React.Component {
-  render() {
-    const { mouse } = this.props;
-    const style = {
-      top: mouse.y,
-      left: mouse.x,
-      position: 'fixed',
-      width: '50px',
-      height: '50px',
-    };
-    return <img style={style} alt="cat" src={cat} />;
-  }
-}
+const Cat = ({ mouse }) => {
+  const style = {
+    top: mouse.y,
+    left: mouse.x,
+    position: 'fixed',
+    width: '50px',
+    height: '50px',
+  };
+  return <img style={style} alt="cat" src={cat} />;
+};
 
 Cat.propTypes = {
   mouse: PropTypes.object.isRequired,
@@ -52,5 +48,4 @@ const App = () => (
   </WithMouse>
 );
 
-spring({ from: { x: 200, y: 50 }, to: { x: 500, y: 100 } }).start(v => console.log(v));
 export default App;
