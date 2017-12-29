@@ -1,27 +1,34 @@
-import React from 'react';
+import React from 'react'
+import PropTypes from 'prop-types'
 
-class App extends React.Component {
-  state = { x: 0, y:0 }
-
+class WithMouse extends React.Component {
+  state = { x: 0, y: 0 }
   handleMouseMove = event => {
     this.setState({
       x: event.clientX,
       y: event.clientY,
-    });
+    })
   }
-
-  render(){
-    const { x, y } = this.state;
-
-    return (
-      <div style={{ height: '100vh' }} onMouseMove={this.handleMouseMove}>
-        <div>
-          <h1>Mouse position is: ({x}, {y})</h1>
-        </div>
-      </div>
-    ); 
+  render() {
+    const { children } = this.props
+    return <div onMouseMove={this.handleMouseMove}>{children(this.state)}</div>
   }
 }
 
+WithMouse.propTypes = {
+  children: PropTypes.func.isRequired,
+}
 
-export default App;
+const App = () => (
+  <WithMouse>
+    {({ x, y }) => (
+      <div style={{ height: '100vh' }}>
+        <h1>
+          Mouse position is: ({x}, {y})
+        </h1>
+      </div>
+    )}
+  </WithMouse>
+)
+
+export default App
