@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { spring } from 'popmotion';
 import cat from './cat.svg';
 
-class WithMouse extends React.Component {
+class Mouse extends React.Component {
   state = { x: 0, y: 0 };
   handleMouseMove = event => {
     this.setState({
@@ -17,16 +17,32 @@ class WithMouse extends React.Component {
   }
 }
 
-WithMouse.propTypes = {
+Mouse.propTypes = {
   children: PropTypes.func.isRequired,
 };
 
+const hasMoved = (prevPosition, position) => prevPosition.x !== position.x || prevPosition.y !== position.y;
+
 class Cat extends React.Component {
+  componentWillReceiveProps(nextProps) {
+    if (!this.state) return this.setState(nextProps.mouse);
+    if (hasMoved(nextProps.mouse, this.props.mouse)) {
+      if (this.spring) this.spring.stop();
+      this.spring = spring({
+        from: this.state,
+        to: nextProps.mouse,
+        stiffness: 200,
+        damping: 10,
+      }).start(v => this.setState(v));
+    }
+  }
+
   render() {
-    const { mouse } = this.props;
+    if (!this.state) return null;
+    const { x, y } = this.state;
     const style = {
-      top: mouse.y,
-      left: mouse.x,
+      top: y,
+      left: x,
       position: 'fixed',
       width: '50px',
       height: '50px',
@@ -40,7 +56,7 @@ Cat.propTypes = {
 };
 
 const App = () => (
-  <WithMouse>
+  <Mouse>
     {({ x, y }) => (
       <div style={{ height: '100vh' }}>
         <h1>
@@ -49,8 +65,7 @@ const App = () => (
         <Cat mouse={{ x, y }} />
       </div>
     )}
-  </WithMouse>
+  </Mouse>
 );
 
-spring({ from: { x: 200, y: 50 }, to: { x: 500, y: 100 } }).start(v => console.log(v));
 export default App;
